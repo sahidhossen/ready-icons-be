@@ -1,21 +1,21 @@
 {
   "font": {
-    "author": "Joomla",
-    "email": "admin@joomla.org",
+    "author": "ReadyIcons",
+    "email": "admin@readyicons.com",
     "ascent": 850,
     "descent": -150,
     "code": 59392,
-    "updateCode": 81172,
-    "fontfamily": "JoomlaFont",
-    "prefix": "icon",
-    "filename": "joomla-fonts",
-    "packageName": "joomla",
+    "updateCode": 81205,
+    "fontfamily": "readyicons-font",
+    "prefix": "ready-icon",
+    "filename": "readyicon-fonts",
+    "packageName": "readyicon-icons",
     "version": "4.0.0",
     "weight": "Normal",
     "style": "Regular",
-    "metadata": "Joomla Icons Font",
+    "metadata": "Ready Icons Font",
     "copyright": "Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.",
-    "url": "https://joomla.org",
-    "license": "https://tm.joomla.org/trademark-license.html"
+    "url": "https://www.readyicons.com/",
+    "license": "https://tm.readyicons.org/trademark-license.html"
   }
 }

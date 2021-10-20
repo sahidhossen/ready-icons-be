@@ -1,55 +1,55 @@
 /**
  * @package 	Icon Template Engine
- * 
+ *
  * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * 
+ *
  * @since		4.0.0
  */
 
-const _ = require('lodash')
+const _ = require("lodash");
 
 const svgFontTemplate = _.template(
-	'<?xml version="1.0" standalone="no"?>\n' +
-		'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
-		'<svg xmlns="http://www.w3.org/2000/svg">\n' +
-		'<defs>\n' +
-		'<font id="<%= font.id %>" horiz-adv-x="<%= font.fontHeight %>" >\n' +
-		'<font-face' +
-		' font-family="<%= font.fontfamily %>"' +
-		' font-weight="400"' +
-		' font-style="<%= font.style %>"' +
-		' units-per-em="<%= font.fontHeight	%>"' +
-		' ascent="<%= font.ascent %>"' +
-		' descent="<%= font.descent %>"' +
-		' />\n' +
-		'<missing-glyph horiz-adv-x="<%= font.fontHeight %>" />\n' +
-		'<% _.forEach(glyphs, function(glyph) { %>' +
-		'<glyph' +
-		' glyph-name="<%= glyph.css %>"' +
-		' horiz-adv-x="<%= glyph.width %>"' +
-		' unicode="<%= glyph.content %>"' +
-		' d="<%= glyph.d %>"' +
-		' />\n' +
-		'<% }); %>' +
-		'</font>\n' +
-		'</defs>\n' +
-		'</svg>'
-)
+  '<?xml version="1.0" standalone="no"?>\n' +
+    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
+    '<svg xmlns="http://www.w3.org/2000/svg">\n' +
+    "<defs>\n" +
+    '<font id="<%= font.id %>" horiz-adv-x="<%= font.fontHeight %>" >\n' +
+    "<font-face" +
+    ' font-family="<%= font.fontfamily %>"' +
+    ' font-weight="400"' +
+    ' font-style="<%= font.style %>"' +
+    ' units-per-em="<%= font.fontHeight	%>"' +
+    ' ascent="<%= font.ascent %>"' +
+    ' descent="<%= font.descent %>"' +
+    " />\n" +
+    '<missing-glyph horiz-adv-x="<%= font.fontHeight %>" />\n' +
+    "<% _.forEach(glyphs, function(glyph) { %>" +
+    "<glyph" +
+    ' glyph-name="<%= glyph.css %>"' +
+    ' horiz-adv-x="<%= glyph.width %>"' +
+    ' unicode="<%= glyph.content %>"' +
+    ' d="<%= glyph.d %>"' +
+    " />\n" +
+    "<% }); %>" +
+    "</font>\n" +
+    "</defs>\n" +
+    "</svg>"
+);
 
 const singleSvgFontTemplate = _.template(
-	'<?xml version="1.0" standalone="no"?>\n' +
-		'<svg xmlns="http://www.w3.org/2000/svg" height="<%= glyph.height %>" width="<%= glyph.width %>" xmlns:xlink="http://www.w3.org/1999/xlink">\n' +
-		'<metadata><%= font.metadata %></metadata>\n' +
-		'<title><%= glyph.name %></title>\n' +
-		'<glyph' +
-		' glyph-name="<%= glyph.css %>"' +
-		' unicode="<%= glyph.content %>"' +
-		' horiz-adv-x="<%= glyph.width %>"' +
-		' />\n' +
-		'<path d="<%= glyph.d %>"/>\n' +
-		'</svg>'
-)
+  '<?xml version="1.0" standalone="no"?>\n' +
+    '<svg xmlns="http://www.w3.org/2000/svg" height="<%= glyph.height %>" width="<%= glyph.width %>" xmlns:xlink="http://www.w3.org/1999/xlink">\n' +
+    "<metadata><%= font.metadata %></metadata>\n" +
+    "<title><%= glyph.name %></title>\n" +
+    "<glyph" +
+    ' glyph-name="<%= glyph.css %>"' +
+    ' unicode="<%= glyph.content %>"' +
+    ' horiz-adv-x="<%= glyph.width %>"' +
+    " />\n" +
+    '<path d="<%= glyph.d %>"/>\n' +
+    "</svg>"
+);
 
 /**
  * Generate CSS template for all fonts based on font config and glyph list
@@ -57,38 +57,38 @@ const singleSvgFontTemplate = _.template(
  */
 
 var cssFontFile = _.template(
-	'/*! \n' +
-		'* @package <%= font.fontfamily %> \n' +
-		'* @version <%= font.version %> \n' +
-		'* @author <%= font.author %> <%= font.url %> \n' +
-		'* @copyright <%= font.copyright %> \n' +
-		'* @license <%= font.license %> \n' +
-		'*/\n\n' +
-		'@font-face' +
-		'{ \n' +
-		'font-family: "<%= font.fontfamily %>";\n' +
-		'font-weight: <%= font.weight %>;\n' +
-		'font-style: "<%= font.style %>";\n' +
-		'src: url("./fonts/<%= font.filename %>.woff2") format("woff2"),\n' +
-		'url("./fonts/<%= font.filename %>.woff") format("woff");\n' +
-		'}' +
-		'\n' +
-		'[class^="<%= font.prefix %>-"], [class*=" <%= font.prefix %>-"] { \n' +
-		"font-family: '<%= font.fontfamily %>' !important;\n" +
-		'speak: none;\n' +
-		'font-style: normal;\n' +
-		'font-weight: normal;\n' +
-		'font-variant: normal;\n' +
-		'text-transform: none;\n' +
-		'white-space: nowrap;\n' +
-		'word-wrap: normal;\n' +
-		'direction: ltr;\n' +
-		'line-height: 1;\n' +
-		'/* Better Font Rendering =========== */\n' +
-		'-webkit-font-feature-settings: "liga";\n' +
-		'-webkit-font-smoothing: antialiased;\n' +
-		'}\n' +
-		`<% _.forEach(glyphs, function(glyph) { 
+  "/*! \n" +
+    "* @package <%= font.fontfamily %> \n" +
+    "* @version <%= font.version %> \n" +
+    "* @author <%= font.author %> <%= font.url %> \n" +
+    "* @copyright <%= font.copyright %> \n" +
+    "* @license <%= font.license %> \n" +
+    "*/\n\n" +
+    "@font-face" +
+    "{ \n" +
+    'font-family: "<%= font.fontfamily %>";\n' +
+    "font-weight: <%= font.weight %>;\n" +
+    'font-style: "<%= font.style %>";\n' +
+    'src: url("./fonts/<%= font.filename %>.woff2") format("woff2"),\n' +
+    'url("./fonts/<%= font.filename %>.woff") format("woff");\n' +
+    "}" +
+    "\n" +
+    '[class^="<%= font.prefix %>-"], [class*=" <%= font.prefix %>-"] { \n' +
+    "font-family: '<%= font.fontfamily %>' !important;\n" +
+    "speak: none;\n" +
+    "font-style: normal;\n" +
+    "font-weight: normal;\n" +
+    "font-variant: normal;\n" +
+    "text-transform: none;\n" +
+    "white-space: nowrap;\n" +
+    "word-wrap: normal;\n" +
+    "direction: ltr;\n" +
+    "line-height: 1;\n" +
+    "/* Better Font Rendering =========== */\n" +
+    '-webkit-font-feature-settings: "liga";\n' +
+    "-webkit-font-smoothing: antialiased;\n" +
+    "}\n" +
+    `<% _.forEach(glyphs, function(glyph) { 
 			let duotone = glyph.duotone ? ".duotone" : ""
 			let cssClass = '.'+font.prefix +'-'+ glyph.css + ':' + glyph.assign
 			if(glyph.alias) {
@@ -295,11 +295,11 @@ var cssFontFile = _.template(
 	`
 );
 /**
- * 
+ *
  * Example HTML generate code
  */
 var exampleHtml = _.template(
-	`<!DOCTYPE html>
+  `<!DOCTYPE html>
 	<html>
 	<head>
 		<meta charset="utf-8">
@@ -399,10 +399,10 @@ var exampleHtml = _.template(
 	</body>
 	</html>
 	`
-)
+);
 
 const updateSvgTemplate = _.template(
-	`<?xml version="1.0"?>
+  `<?xml version="1.0"?>
 	<svg xmlns="http://www.w3.org/2000/svg" 
 		width="<%= svg.width %>" 
 		height="<%= svg.height %>" 
@@ -412,13 +412,12 @@ const updateSvgTemplate = _.template(
 		><path d="<%= svg.d %>"/>
 	</svg>
 	`
-)
-
+);
 
 module.exports = {
-	singleSvgFontTemplate,
-	svgFontTemplate,
-	cssFontFile,
-	updateSvgTemplate,
-	exampleHtml
-}
+  singleSvgFontTemplate,
+  svgFontTemplate,
+  cssFontFile,
+  updateSvgTemplate,
+  exampleHtml,
+};
