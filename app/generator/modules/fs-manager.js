@@ -2,11 +2,11 @@ const shell = require('shelljs');
 const path = require('path');
 const fs = require('fs');
 const archiver = require('archiver');
-
-class FsManager {
+const BaseModule = require('./base-module');
+class FsManager extends BaseModule {
 	constructor() {
+		super();
 		this.uid = '';
-		this.publicPath = path.resolve('./public');
 		this.packageName = 'readyicon-icons';
 		this.commonFolder = ['fonts'];
 	}

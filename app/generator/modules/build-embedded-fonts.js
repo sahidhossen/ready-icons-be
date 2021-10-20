@@ -11,9 +11,11 @@ const compressor = require('node-minify');
 const cssbeautify = require('cssbeautify');
 const FsManager = require('./fs-manager');
 const TemplateEngine = require('../template_engine/engine');
+const BaseModule = require('./base-module');
 
-class IcoGenerator {
+class IcoGenerator extends BaseModule {
 	constructor() {
+		super();
 		this.icons = [];
 		this.errors = {
 			error: false,

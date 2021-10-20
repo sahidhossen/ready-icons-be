@@ -4,25 +4,25 @@ const SvgPath = require('svgpath');
 const _ = require('lodash');
 const IcoGenerator = require('./build-embedded-fonts');
 const ProcessSvg = require('./process-svg');
+const BaseModule = require('./base-module');
 
-class CreatePackage {
+class CreatePackage extends BaseModule {
+	constructor() {
+		super();
+	}
 	initiate() {
 		try {
-			const rootPath = path.resolve('.');
-			const configPath = rootPath + '/config';
-			const fontDir = rootPath + '/packages';
-			const jsonWritePath = fontDir + '/icofonts.json';
-
-			if (!fs.existsSync(fontDir)) {
+			if (!fs.existsSync(this.packagesFolder)) {
 				throw 'Font directory not exits!';
 			}
 			const iconGenerator = new IcoGenerator();
 
-			const cfg = JSON.parse(fs.readFileSync(path.resolve(configPath, 'icons.json'), 'utf8'));
-			const collection = this.collectGlyphData(cfg, fontDir);
+			const jsonWritePath = this.packagesFolder + '/icofonts.json';
+			const cfg = JSON.parse(fs.readFileSync(path.resolve(this.configFolder, 'icons.json'), 'utf8'));
+			const collection = this.collectGlyphData(cfg, this.packagesFolder);
 			iconGenerator.font = Object.assign({}, iconGenerator.font, cfg.font);
-			iconGenerator.isSelfPackage = true;
 			iconGenerator.icons = collection.glyphs;
+			iconGenerator.isSelfPackage = true;
 			iconGenerator.generate(); // Generator method will invoke the main functions
 			if (iconGenerator.errors.error === true) {
 				// Check if generator has error after create css, fonts and svg

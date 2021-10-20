@@ -4,14 +4,11 @@ const path = require('path');
 const ProcessSvg = require('./process-svg');
 const TemplateEngine = require('../template_engine/engine');
 const shell = require('shelljs');
+const BaseModule = require('./base-module');
 
-class FontConfig {
+class FontConfig extends BaseModule {
 	constructor() {
-		this.rootPath = path.resolve('./packages');
-		this.packagePath = '';
-		this.targetPackageFolder = path.resolve('./packages/');
-		this.categoryDirs = '';
-		this.configFolder = path.resolve('./config/');
+		super();
 	}
 
 	async initiate() {
@@ -40,8 +37,8 @@ class FontConfig {
 	}
 
 	async readCategoryDirectory() {
-		const categoryDirectory = fs.readdirSync(this.targetPackageFolder).filter((file) => {
-			return fs.statSync(this.targetPackageFolder + '/' + file).isDirectory();
+		const categoryDirectory = fs.readdirSync(this.packagesFolder).filter((file) => {
+			return fs.statSync(this.packagesFolder + '/' + file).isDirectory();
 		});
 		return categoryDirectory;
 	}
@@ -90,7 +87,7 @@ class FontConfig {
 			 */
 			const iconCollection = [];
 			catDirectories.map((folderName) => {
-				const iconPath = this.targetPackageFolder + '/' + folderName + '/';
+				const iconPath = this.packagesFolder + '/' + folderName + '/';
 				const duotone = folderName.split('-')[0] === 'duotone';
 				fs.readdirSync(iconPath).map((file) => {
 					const filename = file.substring(0, file.lastIndexOf('.'));
