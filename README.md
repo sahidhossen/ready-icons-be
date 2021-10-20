@@ -1,18 +1,20 @@
 # Duotone Icon Generator
 
-### Installtaion Process ###
+### Installtaion Process
 
 Clone git repository from-
+
 ```
-https://github.com/kawshar/joomla-icon-font
+git@github.com:sahidhossen/ready-icons-be.git
 ```
 
-Go API Folder 
+Switch ready-icons-be Folder
+
 ```
-cd api 
+cd ready-icons-be
 ```
 
-Run NPM command 
+Run NPM command
 
 ```
 npm install or yarn install
@@ -23,9 +25,10 @@ After successfully install run the build command for build fonts
 ```
 npm run build
 ```
-It will generate font package folder into ```public``` directory
 
-### Exceptional Case 
+It will generate font package folder into `public` directory
+
+### Exceptional Case
 
 Build only ico-config json file command
 
@@ -33,7 +36,8 @@ Build only ico-config json file command
 npm run build_config
 ```
 
-Build only icon json data and package 
+Build only icon json data and package
+
 ```
 npm run build_font
 ```
