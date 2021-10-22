@@ -1,2 +1,2 @@
-module.exports.IconGeneratorController = require('../controllers/IconGenerator');
+module.exports.IconGeneratorController = require('./IconGeneratorController');
 module.exports.DownloadController = require('../controllers/DownloadController');

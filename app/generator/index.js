@@ -39,7 +39,7 @@ router.post('/', function (req, res, next) {
 router.get('/bf142d158ec57bea9a9cae1b77d5018d/svg2json', function (req, res) {
 	try {
 		const createConfig = new FontConfig();
-		const result = createConfig.initiate();
+		const result = createConfig.convertAllSvgToJson();
 		res.status(200).send({
 			success: true,
 			config: result.config,

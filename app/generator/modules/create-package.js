@@ -20,7 +20,6 @@ class CreatePackage extends BaseModule {
 			const jsonWritePath = this.packagesFolder + '/icofonts.json';
 			const cfg = JSON.parse(fs.readFileSync(path.resolve(this.configFolder, 'icons.json'), 'utf8'));
 			const collection = this.collectGlyphData(cfg, this.packagesFolder);
-			iconGenerator.font = Object.assign({}, iconGenerator.font, cfg.font);
 			iconGenerator.icons = collection.glyphs;
 			iconGenerator.isSelfPackage = true;
 			iconGenerator.generate(); // Generator method will invoke the main functions

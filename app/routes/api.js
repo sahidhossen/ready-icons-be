@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { IconGeneratorController } = require('../controllers');
 
-router.get('/get-icons', (req, res, next) => {
+router.get('/icons', (req, res, next) => {
 	const controller = new IconGeneratorController(req);
 	return controller
 		.getIcons()
@@ -29,6 +29,20 @@ router.get('/create-font-config', (req, res, next) => {
 router.get('/create-package', (req, res, next) => {
 	return new IconGeneratorController(req)
 		.createPackage()
+		.then((result) => res.send(result))
+		.catch(next);
+});
+
+router.post('/svg-to-json', (req, res, next) => {
+	return new IconGeneratorController(req)
+		.convertSvgToJson()
+		.then((result) => res.send(result))
+		.catch(next);
+});
+
+router.post('/json-to-svg', (req, res, next) => {
+	return new IconGeneratorController(req)
+		.convertAllJsonToSvg()
 		.then((result) => res.send(result))
 		.catch(next);
 });

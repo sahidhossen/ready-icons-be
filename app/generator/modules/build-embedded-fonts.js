@@ -12,6 +12,7 @@ const cssbeautify = require('cssbeautify');
 const FsManager = require('./fs-manager');
 const TemplateEngine = require('../template_engine/engine');
 const BaseModule = require('./base-module');
+const SvgModule = require('./svg-module');
 
 class IcoGenerator extends BaseModule {
 	constructor() {
@@ -21,22 +22,12 @@ class IcoGenerator extends BaseModule {
 			error: false,
 			message: [],
 		};
-		this.font = {
-			prefix: 'joomla',
-			filename: 'joomla',
-			fontfamily: 'JoomlaFont',
-			weight: 'normal',
-			copyrightStart: 2015,
-			copyright: '',
-			style: 'Regular',
-			ascent: 850,
-			descent: -150,
-			fontHeight: 850 - -150,
-		};
 		this.glyphs = [];
 		this.uid = uuidv4();
 		this.isSelfPackage = false;
 		this.fsMethod = new FsManager();
+		this.svgMethod = new SvgModule();
+		this.loadFont();
 	}
 
 	generate() {
@@ -49,25 +40,15 @@ class IcoGenerator extends BaseModule {
 		}
 	}
 
-	singleSvgInit(icon) {
-		const glyph = {
-			height: typeof icon.svg.height === 'undefined' ? icon.svg.width : icon.svg.height,
-			width: icon.svg.width,
-			d: icon.svg.path,
-			css: icon.name,
-			assign: icon.assign,
-			id: icon.id,
-			name: icon.name,
-			unicode: icon.code.toString(16),
-			content: '&#x' + icon.code.toString(16) + ';',
-		};
-
-		this.fsMethod.srcPath = 'download';
-		this.fsMethod.singleSvgInit(this.uid);
-
-		this.svgTemplate = TemplateEngine.singleSvgFontTemplate({ font: this.font, glyph });
-
-		this.exportSingleSVG(glyph);
+	async createSingleSvg(iconData) {
+		try {
+			const svgTemplate = this.svgMethod.createSvg({ data: iconData, font: this.font });
+			this.fsMethod.singleSvgInit(this.uid);
+			this.svgMethod.exportSingleSVG({ path: this.fsMethod.userFolder, name: iconData.name, svgTemplate });
+			return { path: this.fsMethod.userFolder, iconName: iconData.name };
+		} catch (err) {
+			throw err;
+		}
 	}
 
 	init(isCustom = false) {
@@ -137,10 +118,7 @@ class IcoGenerator extends BaseModule {
 		const ttf = svg2ttf(svg, {}).buffer;
 		return 'data:font/truetype;base64,' + b64.fromByteArray(ttf);
 	}
-	exportSingleSVG(glyph) {
-		fs.writeFileSync(this.fsMethod.userFolder + '/' + glyph.name.replace(' ', '') + '.svg', this.svgTemplate, 'utf8');
-		return true;
-	}
+
 	exportSVG() {
 		fs.writeFileSync(this.fsMethod.fontsFolder + '/' + this.font.filename + '.svg', this.svgTemplate, 'utf8');
 		return true;

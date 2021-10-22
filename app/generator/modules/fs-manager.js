@@ -10,6 +10,11 @@ class FsManager extends BaseModule {
 		this.packageName = 'readyicon-icons';
 		this.commonFolder = ['fonts'];
 	}
+
+	createFolder(path) {
+		shell.mkdir('-p', path);
+	}
+
 	singleSvgInit(uuid) {
 		this.uid = uuid;
 		this.createDownloadFolder();

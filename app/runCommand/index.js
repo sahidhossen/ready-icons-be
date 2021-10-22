@@ -1,7 +1,7 @@
 const { FontConfig, CreatePackage } = require('../generator/modules');
 
 const buildFontJson = () => {
-	new FontConfig().initiate();
+	new FontConfig().convertAllSvgToJson();
 };
 
 const buildFontPackage = () => {

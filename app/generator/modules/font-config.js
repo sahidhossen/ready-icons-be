@@ -5,20 +5,63 @@ const ProcessSvg = require('./process-svg');
 const TemplateEngine = require('../template_engine/engine');
 const shell = require('shelljs');
 const BaseModule = require('./base-module');
+const FsManager = require('./fs-manager');
+const SvgModule = require('./svg-module');
 
 class FontConfig extends BaseModule {
 	constructor() {
 		super();
+		this.fsMethod = new FsManager();
+		this.svgMethod = new SvgModule();
 	}
 
-	async initiate() {
+	async getIcons() {
 		try {
-			const { config, alias } = await this.readConfigFile();
+			const icons = JSON.parse(fs.readFileSync(path.resolve(this.configFolder + '/icons.json'), 'utf8'));
+			return icons.glyphs;
+		} catch (err) {
+			return { success: false, message: err };
+		}
+	}
+
+	async convertAllJsonToSvg() {
+		try {
+			this.loadFont();
+			const { icons } = JSON.parse(fs.readFileSync(path.resolve('./icofont-icons.json'), 'utf8'));
+			icons.map((icon) => {
+				if (icon.cat) {
+					const folderLocation = path.resolve(this.packagesFolder, icon.cat);
+					this.fsMethod.createFolder(folderLocation);
+					const svgTemplate = this.svgMethod.createSvgWithViewport(icon);
+					this.svgMethod.exportSingleSVG({ path: folderLocation, name: icon.name, svgTemplate });
+				} else {
+					console.log('cat not found: ', icon);
+				}
+			});
+			return { success: true };
+		} catch (err) {
+			console.log('====convertAllJsonToSvg error===:', err);
+			return { success: false };
+		}
+	}
+
+	async convertAllSvgToJson() {
+		try {
+			this.loadFont();
+			const alias = await this.readAlias();
 			const catDirectories = await this.readCategoryDirectory();
 			if (catDirectories.length === 0) {
 				throw 'Category folder not found';
 			}
-			const result = await this.readSvgIcons({ catDirectories, config, alias });
+			const result = await this.readSvgIcons({ catDirectories, alias });
+			const configPath = path.resolve(this.configFolder, 'icons.json');
+
+			fs.writeFile(configPath, JSON.stringify({ glyphs: result.glyphs, font: result.font }, null, 2), 'utf8', (err) => {
+				if (err) console.log('file write error:  ', err); // eslint-disable-line no-console
+			});
+
+			this.updateFontCode(result.updateCode);
+
 			return result;
 		} catch (err) {
 			console.log('FontConfig error: ', err);
@@ -26,14 +69,22 @@ class FontConfig extends BaseModule {
 		}
 	}
 
-	async readConfigFile() {
-		const config = JSON.parse(fs.readFileSync(path.resolve(this.configFolder, 'icon-config.json'), 'utf8'));
+	async updateFontCode(updateCode) {
+		if (this.font.updateCode !== updateCode) {
+			fs.writeFile(
+				this.fontConfigPath,
+				JSON.stringify({ font: { ...this.font, updateCode } }, null, 2),
+				'utf8',
+				(err) => {
+					if (err) console.log('Font config file write error:  ', err); // eslint-disable-line no-console
+				},
+			);
+		}
+	}
+
+	async readAlias() {
 		const alias = JSON.parse(fs.readFileSync(path.resolve(this.configFolder, 'joomla-font-alias.json'), 'utf8'));
-		config.font.copyright = config.font.copyright.replace('{year}', new Date().getFullYear());
-		return {
-			config,
-			alias,
-		};
+		return alias;
 	}
 
 	async readCategoryDirectory() {
@@ -43,9 +94,9 @@ class FontConfig extends BaseModule {
 		return categoryDirectory;
 	}
 
-	async readSvgIcons({ config, alias, catDirectories }) {
+	async readSvgIcons({ alias, catDirectories }) {
 		try {
-			const fontConfig = { ...config.font };
+			const fontConfig = { ...this.font };
 			let updateCode = fontConfig.updateCode ? fontConfig.updateCode : fontConfig.code - 1;
 
 			/**
@@ -101,7 +152,7 @@ class FontConfig extends BaseModule {
 					}
 				});
 			});
-			return { icons: iconCollection, config: { ...config, font: fontConfig }, updateCode };
+			return { glyphs: iconCollection, font: fontConfig, updateCode };
 		} catch (err) {
 			console.log('SVG GENERATOR ERROR: ', err);
 			throw new Error(err);
